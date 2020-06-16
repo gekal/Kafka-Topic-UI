@@ -1,0 +1,49 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafkarest
+  labels:
+    app: kafkarest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafkarest
+  template:
+    metadata:
+      labels:
+        app: kafkarest
+    spec:
+      containers:
+        - name: kafkarest
+          image: confluentinc/cp-kafka-rest:4.0.0
+          ports:
+            - containerPort: 8082
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+          env:
+            - name: KAFKA_REST_ZOOKEEPER_CONNECT
+              value:  "my-release-zookeeper:2181"
+            - name: KAFKA_REST_HOST_NAME
+              value: "kafkarest"
+            - name: KAFKA_REST_LISTENERS
+              value:  "http://0.0.0.0:8082"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: kafkarest
+  name: kafkarest
+spec:
+  ports:
+    - port: 8082
+      protocol: TCP
+      targetPort: 8082
+  selector:
+    app: kafkarest

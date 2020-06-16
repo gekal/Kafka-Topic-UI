@@ -1,0 +1,48 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafkatopicui
+  labels:
+    app: kafkatopicui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafkatopicui
+  template:
+    metadata:
+      labels:
+        app: kafkatopicui
+    spec:
+      containers:
+        - name: kafkatopicui
+          image: landoop/kafka-topics-ui:0.9.4
+          ports:
+            - containerPort: 8082
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+          env:
+            - name: KAFKA_REST_PROXY_URL
+              value: "http://kafkarest:8082"
+            - name: PROXY
+              value: "true"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: kafkatopicui
+  name: kafkatopicui
+spec:
+  type: NodePort
+  ports:
+    - port: 8000
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: kafkatopicui
