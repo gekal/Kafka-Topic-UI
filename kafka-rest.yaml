@@ -26,8 +26,11 @@ spec:
               cpu: 500m
               memory: 1Gi
           env:
-            - name: KAFKA_REST_ZOOKEEPER_CONNECT
-              value:  "my-release-zookeeper:2181"
+            - name: KAFKA_REST_BOOTSTRAP_SERVERS
+              value:  "my-release-kafka:9092"
+            - name: KAFKA_REST_CLIENT_SECURITY_PROTOCOL
+              # PLAINTEXT, SSL, SASL_PLAINTEXT, SASL_SSL
+              value:  "PLAINTEXT"
             - name: KAFKA_REST_HOST_NAME
               value: "kafkarest"
             - name: KAFKA_REST_LISTENERS
